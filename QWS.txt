@@ -1,0 +1,3 @@
+The QWS dataset that is available free of charge for educational and non-commercial purposes is realized by Eyhab Al-Masri and Qusay H
+Mahmoud Al-Masri et al. (2007). 
+This dataset is available at this link: https://qwsdata.github.io/
