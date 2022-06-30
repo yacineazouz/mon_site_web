@@ -1,0 +1,10 @@
+services_stop:
+     - HUE-1-HUE_SERVER
+     - HUE-1-KT_RENEWER
+     - HDFS-1-HTTPFS
+services_start:	 
+	- HDFS-1-HTTPFS
+     - HUE-1-KT_RENEWER
+     - HUE-1-HUE_SERVER
+
+
