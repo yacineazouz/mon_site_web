@@ -1,0 +1,10 @@
+services_stop:
+     - HBASE-1-REGIONSERVER
+     - YARN-1-NODEMANAGER
+     - HDFS-1-DATANODE
+
+
+services_start:
+     - HDFS-1-DATANODE
+     - HBASE-1-REGIONSERVER
+     - YARN-1-NODEMANAGER
