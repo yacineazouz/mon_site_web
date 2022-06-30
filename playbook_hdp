@@ -1,0 +1,67 @@
+---
+- name: Using a REST API
+  become: yes
+  hosts: CN, MN1, MN2, MN3, MN4, MN5 
+  gather_facts: false
+  # run sequentially
+  serial: 1
+  tasks: 
+    - debug:
+        msg: "{{ ansible_host }}"
+        
+    - name: call rest api for stop service
+      uri:
+        url: "https://{{ hostname }}:8080/api/v1/clusters/{{ cluster-name }}/hosts/{{ ansible_host }}/host_components/{{ item }}"
+        method: PUT
+        user: service_restart 
+        password: "{{ password_ambari_service_restart }}" 
+        use_proxy: no
+        force_basic_auth: yes
+        body: " {\"HostRoles\": {\"state\": \"INSTALLED\"}}"
+        #body: \"{{ lookup('file','curl_values.json') }}"
+        body_format: raw 
+        status_code: 202,200
+        headers:
+          X-Requested-By: "ambari"
+      with_items: "{{ services_stop }}"
+         
+      register: results
+
+    - pause:
+        seconds: 30
+ 
+    - debug:
+        var: results.json.value
+
+
+ #Reboot machine
+
+    - name: reboot CN
+      reboot:
+    #  become: true
+    #  become_user: root 
+
+    - pause:
+        seconds: 60
+
+    - name: call rest api for start service
+      uri:
+        url: "https://{{ hostname }}:8080/api/v1/clusters/{{ cluster-name }}/hosts/{{ ansible_host }}/host_components/{{ item }}"
+        method: PUT
+        user: service_restart
+        password: "{{ password_ambari_service_restart }}" 
+        use_proxy: no
+        force_basic_auth: yes
+        body: " {\"HostRoles\": {\"state\": \"STARTED\"}}"
+        #body: \"{{ lookup('file','curl_values.json') }}"
+        body_format: raw
+        status_code: 202,200
+        headers:
+          X-Requested-By: "ambari"
+      with_items: "{{ services_start }}"
+
+      register: results
+
+    - debug:
+        var: results.json.value
+
