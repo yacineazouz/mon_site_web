@@ -1,0 +1,43 @@
+ansible-vault encrypt_string --vault-password-file vault-passwd_file.txt '' --name 'password_ambari_service_restart'
+
+ansible-vault encrypt_string --vault-password-file vault-passwords.txt 'xxxxxxx' --name 'password_ambari_service_restart'
+
+ansible-playbook -i inventories/sit-int-19499-002/hosts --vault-password-file vault-passwords.txt call_api_rest_for_all_v2.yml --limit s01vl9979357.fr.net.intra --check
+
+create merge request : via le site git en cliquant sur le bouton create merge request puis next 
+
+
+netstat -tln | grep 1022
+
+netstat -tnlpa | grep 3306
+
+- Kubectl config use-context :
+Si l’on veut changer de clusters dans notre config
+
+Kubectl get pods :
+lister les pods présents sur le cluster Kubernetes.
+
+- Tous les types de ressources Kubernetes : pods, services, deployments, cronjobs, events, ingresses, etc... 
+On peut aussi ajouter des paramètres: 
+--all-namespaces : Liste toutes les ressources de tous les namespaces.
+-o wide : Liste toutes les ressources avec plus de détails.
+- Kubectl describe pod :
+Ça donne un affichage verbeux du pod contrairement au get et affichage basique. Cela permet d’avoir les events, utile quand un pod ne démarre pas. 
+
+Ex : Kubectl describe pods my-pod.
+- Kubectl logs [-f] POD [-c CONTENEUR] :
+Cette commande affiche les logs de votre POD.
+l’option -c : on veut afficher les logs d’un pod multi-conteneur
+l'option -f : permet d’afficher la sortie des logs en continue (stream)
+
+Exemple: Kubectl logs -f my_pod -c my_app
+- Kubectl create -f FICHIER:
+
+- Kubectl apply -f FICHIER
+
+
+- Kubectl delete (-f FICHIER | TYPE [PREFIXE_NOM | NOM])
+
+Détruit le pod sur le cluster portant le nom my_pod
+
+Ex: Kubectl delete my_pod
