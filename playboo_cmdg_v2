@@ -1,0 +1,70 @@
+---
+- name: Using a REST API
+  become: false
+  hosts: CN
+  gather_facts: false
+  tasks:
+    - debug:
+        msg: " "
+
+    - name: call rest api for stop service
+      uri:
+        url: "https://{{ hostname_cdmg }}:7183/api/v33/clusters/{{ cluster_name }}/services/{{ item.split('1')[0] }}1/roleCommands/stop"
+        method: POST
+        user: service_restart
+        password: "{{ password_ambari_service_restart }}"
+        use_proxy: no
+        force_basic_auth: yes
+        body: "{\"items\" : [\"{{ item }}-{{ role_name_code[0] }}\"] }"
+        body_format: json
+        status_code: 202,200
+        headers:
+          X-Requested-By: "ambari"
+      with_items: "{{ services_stop }}"
+      delay: 40
+
+      register: results
+
+    - pause:
+        seconds: 30
+
+    - debug:
+        var: results.json.value
+
+
+ #Reboot machine
+
+    - name: reboot CN_1
+      reboot:
+      #become: yes
+      #become_user: root
+    
+    - name: Restart Cloudera Manager Agents
+      service:
+        name: cloudera-scm-agent
+        state: restarted
+        enabled: yes
+
+    - pause:
+        seconds: 60
+
+    - name: call rest api for start service
+      uri:
+        url: https://{{ hostname_cdmg }}:7183/api/v33/clusters/{{ cluster_name }}/services/{{ item.split('1')[0] }}1/roleCommands/start
+        method: POST
+        user: service_restart
+        password: "{{ password_ambari_service_restart }}"
+        use_proxy: no
+        force_basic_auth: yes
+        body: "{\"items\" : [\"{{ item }}-{{ role_name_code[0] }}\"] }"
+        body_format: json
+        status_code: 202,200
+        headers:
+          X-Requested-By: "ambari"
+      with_items: "{{ services_start }}"
+      delay: 40
+
+      register: results
+
+    - debug:
+        var: results.json.value
